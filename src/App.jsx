@@ -1,39 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  // Create the count state.
-  const [count, setCount] = useState(0);
-  // Create the counter (+1 every second).
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+
+const mpeg = createFFmpeg({ log: true });
+
+const App = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [video, setVideo] = useState();
+  const [gif, setGif] = useState();
+
+  const loadFfmpeg = async () => {
+    await mpeg.load();
+    setIsLoaded(true);
+  }
+
   useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
-  // Return the App component.
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
-  );
+    loadFfmpeg();
+  }, [])
+
+  const convertToGif = async () => {
+    mpeg.FS('writeFile', 'sample.mp4', await fetchFile(video));
+    await mpeg.run('-i', 'sample.mp4', '-t', '2.5', '-ss', '2.0', '-f', 'gif', 'result.gif');
+
+    const data = mpeg.FS('readFile', 'result.gif');
+    const gifUrl = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif'}));
+  
+    setGif(gifUrl);
+  }
+
+  return isLoaded ? (
+      <div className="App">
+        <h1>Please choose a video to convert</h1>
+        { video ? 
+          <div>
+            <video
+              controls
+              width="320"
+              src={URL.createObjectURL(video)}
+            />
+            <br />
+            <button class="btn" onClick={convertToGif}>Convert</button>
+          </div> :
+          <input
+            type="file"
+            onChange={e => setVideo(e.target.files?.item(0))}
+          />
+        }
+
+        <div style={{ marginTop: '20px' }}>
+          <h1>Result</h1>
+
+          <img src={gif} />
+        </div>
+
+        
+      </div>
+    ) :
+    (
+      <p style={{ textAlign: 'center' }}>Loading...</p>
+    );
 }
 
 export default App;

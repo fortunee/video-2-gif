@@ -43,3 +43,19 @@
     transform: rotate(360deg);
   }
 }
+
+.App .btn {
+  padding: 15px;
+  width: 150px;
+  background: rgb(32, 105, 129);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: large;
+  font-weight: bolder;
+}
+
+.App .btn:hover {
+  background: lightblue;
+  color: #271a1a33
+}
