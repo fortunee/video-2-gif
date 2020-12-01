@@ -1,2 +1,3 @@
 # video-2-gif
-This basically converts a piece of video to gif file. It implores the WASM technology to utilize a C++ package
+This basically allows users to edit videos on the web and converts it to gif file. 
+It implores the WASM technology to utilize a C++ package (FFmpeg)
