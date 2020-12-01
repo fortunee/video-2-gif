@@ -1,2 +1,2 @@
-# pg-enum-updater
-This package basically updates a list of postgres ENUM values without much hassle
+# video-2-gif
+This basically converts a piece of video to gif file
