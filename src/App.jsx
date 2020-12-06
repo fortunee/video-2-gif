@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
-
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+
+import './App.css';
 
 const mpeg = createFFmpeg({ log: true });
 
